@@ -1,0 +1,12 @@
+pytest==7.4.3
+pytest-xdist==3.5.0
+allure-pytest==2.13.2
+python-dotenv==1.0.0
+faker==20.1.0
+requests==2.33.1
+jsonschema==4.20.0
+selenium==4.42.0
+webdriver-manager==4.0.1
+psycopg2-binary==2.9.9
+sqlalchemy==2.0.23
+pytest-html==4.1.1

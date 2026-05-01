@@ -1,0 +1,72 @@
+name: Test Automation Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  schedule:
+    - cron: "0 */4 * * *"
+  workflow_dispatch:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_DB: testdb
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpass
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U testuser -d testdb"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+      selenium:
+        image: selenium/standalone-chrome:4.42.0
+        ports:
+          - 4444:4444
+        options: >-
+          --shm-size=2g
+    env:
+      DB_HOST: localhost
+      DB_NAME: testdb
+      DB_USER: testuser
+      DB_PASS: testpass
+      DB_PORT: 5432
+      API_BASE_URL: https://jsonplaceholder.typicode.com
+      SELENIUM_GRID_URL: http://localhost:4444/wd/hub
+      HEADLESS: "True"
+      TIMEOUT: 10
+      BASE_URL: https://www.saucedemo.com
+      TEST_USER: standard_user
+      TEST_PASSWORD: secret_sauce
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Prepare database schema
+        run: PGPASSWORD=testpass psql -h localhost -U testuser -d testdb -f data/init.sql
+
+      - name: Run tests
+        run: pytest -v --alluredir=reports/allure-results
+
+      - name: Upload Allure raw results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results
+          path: reports/allure-results
