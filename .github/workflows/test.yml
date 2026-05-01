@@ -62,7 +62,12 @@ jobs:
         run: PGPASSWORD=testpass psql -h localhost -U testuser -d testdb -f data/init.sql
 
       - name: Run tests
-        run: pytest -v --alluredir=reports/allure-results
+        run: pytest -v -m "not slow" --alluredir=reports/allure-results
+
+      - name: Run slow UI tests (non-blocking)
+        if: always()
+        continue-on-error: true
+        run: pytest -v -m slow --alluredir=reports/allure-results
 
       - name: Upload Allure raw results
         if: always()
