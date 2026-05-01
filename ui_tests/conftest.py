@@ -37,7 +37,7 @@ def driver(request):
                 command_executor=grid_url,
                 options=options,
             )
-        except WebDriverException:
+        except Exception:
             browser = None
 
     if browser is None:

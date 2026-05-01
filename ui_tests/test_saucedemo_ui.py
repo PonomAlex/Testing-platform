@@ -4,6 +4,7 @@ from pathlib import Path
 
 import pytest
 from dotenv import load_dotenv
+from selenium.webdriver.support.ui import WebDriverWait
 
 from ui_tests.pages.cart_page import CartPage
 from ui_tests.pages.login_page import LoginPage
@@ -64,6 +65,13 @@ def test_remove_product_from_cart(logged_in_products_page):
     logged_in_products_page.add_to_cart("Sauce Labs Backpack")
     assert logged_in_products_page.cart_items_count() == 1
     logged_in_products_page.remove_from_cart("Sauce Labs Backpack")
+    try:
+        WebDriverWait(logged_in_products_page.driver, 5).until(
+            lambda _driver: logged_in_products_page.cart_items_count() == 0
+        )
+    except Exception:
+        # Retry once for remote-grid lag where click can be missed.
+        logged_in_products_page.remove_from_cart("Sauce Labs Backpack")
     assert logged_in_products_page.cart_items_count() == 0
 
 

@@ -26,6 +26,10 @@ class BasePage:
     def click(self, locator: Locator) -> None:
         self.wait_clickable(locator).click()
 
+    def click_via_js(self, locator: Locator) -> None:
+        element = self.wait_clickable(locator)
+        self.driver.execute_script("arguments[0].click();", element)
+
     def type(self, locator: Locator, text: str) -> None:
         element = self.wait_visible(locator)
         element.clear()
