@@ -45,7 +45,7 @@ def driver(request):
         browser = webdriver.Chrome(service=service, options=options)
 
     browser.implicitly_wait(timeout)
-    request.node._driver = browser  # pylint: disable=protected-access
+    request.node._driver = browser
     yield browser
     browser.quit()
 
@@ -64,5 +64,4 @@ def pytest_runtest_makereport(item, call):
                     attachment_type=allure.attachment_type.PNG,
                 )
             except Exception:
-                # Browser may already be gone in remote-grid flaky failures.
                 pass

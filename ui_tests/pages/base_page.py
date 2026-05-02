@@ -39,7 +39,6 @@ class BasePage:
         return self.wait_visible(locator).text.strip()
 
     def count(self, locator: Locator) -> int:
-        # Count should support "0 elements" state (for remove-from-cart checks).
         return len(self.driver.find_elements(*locator))
 
     def is_visible(self, locator: Locator) -> bool:

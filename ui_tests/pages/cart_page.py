@@ -38,7 +38,6 @@ class CartPage(BasePage):
         self.type(self.FIRST_NAME, first_name)
         self.type(self.LAST_NAME, last_name)
         self.type(self.ZIP_CODE, zip_code)
-        # Force values in remote-grid mode where key events can be flaky.
         self.driver.execute_script(
             """
             document.getElementById('first-name').value = arguments[0];

@@ -92,8 +92,5 @@ def test_negative_404_cases(api_client, endpoint, expected_code):
 
 @pytest.mark.api
 def test_negative_invalid_payload_returns_400_or_201(api_client):
-    """
-    JSONPlaceholder is a fake API and may still return 201 for invalid payloads.
-    """
     response = api_client.post("/posts", data={"title": 123, "body": None, "userId": "abc"})
     assert response.status_code in (201, 400)
